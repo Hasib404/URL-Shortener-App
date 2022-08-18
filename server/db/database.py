@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-SQLALCHEMY_DATABASE_URL = "postgresql://username:password@localhost:5436/nudges"
+SQLALCHEMY_DATABASE_URL = "postgresql://username:password@db:5432/nudges"
 POOL_SIZE = 20
 POOL_RECYCLE = 3600
 POOL_TIMEOUT = 15
