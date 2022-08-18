@@ -13,4 +13,3 @@ def test_add_new_product(client: TestClient, db: Session) -> None:
     content = response.json()
     assert response.status_code == 200
     assert content["message"] == "Product added successfully."
-

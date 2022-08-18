@@ -2,18 +2,14 @@ from typing import Dict, Generator
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
 
-from db.database import Database
+from server.db.database import SessionLocal
 from main import app
 
 
 @pytest.fixture(scope="session")
 def db() -> Generator:
-    database = Database()
-    engine = database.get_db_connection()
-    session = database.get_db_session(engine)
-    yield session
+    yield SessionLocal()
 
 
 @pytest.fixture(scope="module")
