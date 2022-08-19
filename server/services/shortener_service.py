@@ -19,8 +19,7 @@ class URLShortenerService:
         )
 
     def generate_random_identifier(self):
-        ''' Generate Short Unique Identifier'''
-
+        ''' Generate Random Identifier'''
         key = None
         characters = string.ascii_letters + string.digits
 
@@ -32,8 +31,8 @@ class URLShortenerService:
                 break
         return key
 
-
     def generate_unique_random_identifier(self) -> str:
+        ''' Generate Unique Random Identifier'''
         key = self.generate_random_identifier()
         while self.get_db_url_by_key(key):
             key = self.generate_random_identifier()
@@ -50,6 +49,7 @@ class URLShortenerService:
 
         
     def shorten_url_obj(self):
+        ''' Shorten the provided url'''
         self.unique_key = self.generate_unique_random_identifier()
         self.shorten_url = self.base_url + '/' + self.unique_key
         insert_obj_to_db = self.create_db_url()

@@ -7,8 +7,6 @@ services:
       context: ./server
       dockerfile: Dockerfile
     command: uvicorn main:app --host 0.0.0.0 --port 80 --reload
-    environment:
-      - DB_URL=postgresql://username:password@db:5432/shortener
     volumes:
       - ./server:/app
     ports:
