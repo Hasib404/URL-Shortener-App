@@ -3,9 +3,11 @@ from models.request import URLOrigin
 from models.response import Response
 from endpoints import deps
 from sqlalchemy.orm import Session
-from db import crud
 from fastapi.responses import RedirectResponse
 from utils.helper_functions import is_valid_url
+from services.shortener_service import URLShortenerService
+from services.click_count_service import URLClickCount
+from models.models import Shortener
 
 # APIRouter creates path operations for shortener module
 router = APIRouter(
@@ -19,8 +21,11 @@ async def shorten_url(url_origin: URLOrigin, db: Session = Depends(deps.get_db))
     if not is_valid_url(url_origin.url):
         data = []
         return Response(data, 400, "Invalid URL", True)
-    db_url = crud.create_db_url(db=db, url_origin=url_origin)
-    data = {"shortener_id": db_url.unique_key}
+    
+    shortener_service = URLShortenerService(url_origin.url, db)
+    url_obj = shortener_service.shorten_url_obj()
+
+    data = {"shortener_id": url_obj.unique_key}
     return Response(data, 200, "shortener added successfully.", False)
 
 
@@ -29,14 +34,16 @@ def forward_to_original_url(
         url_key: str,
         db: Session = Depends(deps.get_db)
     ):
-    if db_url := crud.get_db_url_by_key(db=db, url_key=url_key):
-        return RedirectResponse(db_url.original_url)
+
+    click_count_service = URLClickCount(url_key, db)
+    click_count_service.update_db_clicks()
+
+    url_obj = (
+            db.query(Shortener)
+            .filter(Shortener.unique_key == url_key)
+            .first()
+        )
+    if url_obj.unique_key == url_key:
+        return RedirectResponse(url_obj.original_url)
     else:
         "raise_not_found(request)"
-
-
-
-# @router.get("/")
-# async def read_all_products(db: Session = Depends(deps.get_db)):
-#     data = db.query(Shortener).all()
-#     return Response(data, 200, "URLS retrieved successfully.", False)

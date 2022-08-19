@@ -3,7 +3,7 @@ from typing import Dict, Generator
 import pytest
 from fastapi.testclient import TestClient
 
-from server.db.database import SessionLocal
+from server.db.config import SessionLocal
 from main import app
 
 

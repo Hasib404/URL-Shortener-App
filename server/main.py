@@ -2,12 +2,11 @@ import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from routes.api import router as api_router
-from models.models import Base
-from db.database import engine
-
-Base.metadata.create_all(bind=engine)
+from db.config import engine, Base
 
 app = FastAPI()
+
+Base.metadata.create_all(bind=engine)
 
 origins = ["http://localhost:8000"]
 
