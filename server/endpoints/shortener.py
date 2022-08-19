@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from models.request import URLOrigin
 from models.response import Response
-from endpoints import deps
+from db import deps
 from sqlalchemy.orm import Session
 from fastapi.responses import RedirectResponse
 from utils.helper_functions import is_valid_url

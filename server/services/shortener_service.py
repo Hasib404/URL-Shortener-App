@@ -53,7 +53,6 @@ class URLShortenerService:
         self.unique_key = self.generate_unique_random_identifier()
         self.shorten_url = self.base_url + '/' + self.unique_key
         insert_obj_to_db = self.create_db_url()
-        print(insert_obj_to_db)
         return insert_obj_to_db
         
 

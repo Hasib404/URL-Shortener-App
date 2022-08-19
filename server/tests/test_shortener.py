@@ -1,8 +1,6 @@
 from utils.helper_functions import is_valid_url
 from services.shortener_service import URLShortenerService
-from main import app
-from tests.conftest import db, client
-
+import json
 
 
 def test_is_valid_url() -> None:
@@ -31,23 +29,35 @@ def test_unique_identifier(db) -> None:
     key_length = len(response)
     assert key_length == 10
 
-def test_shorten_url_obj(db) -> None:
-    url = "http://google.com"
-    shrtener_service = URLShortenerService(url, db)
+def test_valid_shorten_url_obj(client) -> None:
+    url = {
+            "url": "http://abc.com"
+        }
+    response = client.post("/url", data=json.dumps(url))
+    content = response.json()
+    assert content["code"] == 200
+    assert len(content["data"]["shortener_id"]) > 0
+    assert content["message"] == "shortener added successfully."
+    assert content["error"] == False
 
-    response = shrtener_service.shorten_url_obj()
-    # key_length = len(response)
-    # assert key_length == 10
+def test_not_valid_shorten_url(client) -> None:
+    url = {
+            "url": "http:/abc.com"
+        }
+    response = client.post("/url", data=json.dumps(url))
+    content = response.json()
+    assert content["code"] == 400
+    assert len(content["data"]) == 0
+    assert content["message"] == "Invalid URL"
+    assert content["error"] == True
 
-
-# def test_is_valid_url(client: TestClient, db: Session) -> None:
-#     new_product = {
-#         "name": "Iphone",
-#         "price": 750,
-#         "is_available": True
-#     }
-#     response = client.post("products/add", json=new_product)
-
-#     content = response.json()
-#     assert response.status_code == 200
-#     assert content["message"] == "Product added successfully."
+def test_not_valid_shorten_url(client) -> None:
+    url = {
+            "url": "http:/abc.com"
+        }
+    response = client.post("/url", data=json.dumps(url))
+    content = response.json()
+    assert content["code"] == 400
+    assert len(content["data"]) == 0
+    assert content["message"] == "Invalid URL"
+    assert content["error"] == True

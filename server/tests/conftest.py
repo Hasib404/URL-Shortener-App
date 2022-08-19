@@ -1,5 +1,6 @@
 from typing import Dict, Generator
-
+from main import app
+from models import response
 import pytest
 from fastapi.testclient import TestClient
 
@@ -14,5 +15,5 @@ def db() -> Generator:
 
 @pytest.fixture(scope="module")
 def client() -> Generator:
-    with TestClient(app) as c:
-        yield c
+    with TestClient(app) as test_client:
+        yield test_client
