@@ -17,12 +17,15 @@ router = APIRouter(
 )
 
 
-@router.post("/url", response_description="Shortener object generated and added into the database")
+@router.post(
+    "/url",
+    response_description="Shortener object generated and added into the database",
+)
 async def shorten_url(url_origin: URLOrigin, db: Session = Depends(deps.get_db)):
     if not is_valid_url(url_origin.url):
         data = []
         return Response(data, 400, "Invalid URL", True)
-    
+
     shortener_service = URLShortenerService(url_origin.url, db)
     url_obj = shortener_service.shorten_url_obj()
 
@@ -31,19 +34,12 @@ async def shorten_url(url_origin: URLOrigin, db: Session = Depends(deps.get_db))
 
 
 @router.get("/{url_key}", response_description="Redirect to original url")
-def forward_to_original_url(
-        url_key: str,
-        db: Session = Depends(deps.get_db)
-    ):
+def forward_to_original_url(url_key: str, db: Session = Depends(deps.get_db)):
 
     click_count_service = URLClickCount(url_key, db)
     click_count_service.update_db_clicks()
- 
-    url_obj = (
-            db.query(Shortener)
-            .filter(Shortener.unique_key == url_key)
-            .first()
-        )
+
+    url_obj = db.query(Shortener).filter(Shortener.unique_key == url_key).first()
     if url_obj:
         url_obj.unique_key == url_key
         return RedirectResponse(url_obj.original_url)
