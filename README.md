@@ -1,4 +1,4 @@
-# URL Shortener App
+# URL Shortener App | FastAPI | Postgres | Docker
 
 * [Guidelines](#guidelines)
 * [API Endpoints](#api-endpoints)
